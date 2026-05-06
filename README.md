@@ -1,103 +1,116 @@
-# 🧪 IngredientIQ — AI-Powered Ingredient Health Analyzer
+# Ingredient Health Analyzer
 
-> **Snap. Analyze. Decide.** — Turn any product label into an instant, AI-researched health verdict.***
+An AI-powered application that analyzes product ingredient labels and provides health-based purchase recommendations.
 
-## 📖 Overview
+## Features
 
-IngredientIQ is an agentic AI application that analyzes product ingredient labels from a photo and gives a clear **BUY / DON'T BUY** recommendation backed by real-time web research. It combines Google Cloud Vision OCR, LangChain ReAct agents, Gemini Pro, and Tavily search to autonomously investigate every ingredient — then synthesizes findings into a human-readable health verdict.
+- 📸 Upload product ingredient label images
+- 🔍 OCR extraction using Google Cloud Vision API
+- 🤖 AI-powered ingredient research using LangChain and Gemini Pro
+- 🔬 Automated health impact analysis with scoring
+- ✅ Clear buy/don't buy recommendations with reasoning
 
-***
-
-## ✨ Features
-
-- 📸 **Image-based OCR** — Upload a photo of any ingredient label; Google Cloud Vision extracts text with 90%+ accuracy
-- 🤖 **Agentic Research** — A LangChain ReAct agent autonomously searches the web for health information on each ingredient
-- 🧠 **In-Memory Context** — Agents maintain multi-step reasoning context for deeper, coherent analysis
-- 🗄️ **Ingredient Database** — Every researched ingredient is cached; repeat scans are near-instant
-- 📊 **Health Scoring** — Ingredients scored individually and aggregated into a product-level health rating
-- ✅ **Clear Verdict** — BUY or DON'T BUY with full natural-language reasoning and per-ingredient breakdown
-
-***
-
-## 🏗️ Architecture
+## Project Structure
 
 ```
-┌─────────────────────────────────┐
-│          Streamlit UI           │
-└──────────────┬──────────────────┘
-               │
-   ┌───────────▼───────────┐
-   │      OCR Service      │
-   │  Google Cloud Vision  │
-   └───────────┬───────────┘
-               │  Ingredients List
-   ┌───────────▼───────────┐
-   │   LangChain Agent     │◄── Gemini Pro (Vertex AI)
-   │  ReAct + Tavily Search│
-   └───────────┬───────────┘
-               │  Research Results
-   ┌───────────▼───────────┐
-   │  Recommendation Engine│
-   │  Health Score + Verdict│
-   └───────────┬───────────┘
-               │
-   ┌───────────▼───────────┐
-   │   Ingredient Database │
-   └───────────────────────┘
+.
+├── app.py                   # Streamlit web application
+├── ocr_service.py           # OCR extraction and ingredient parsing
+├── agent_research.py        # LangChain agent for health research
+├── recommendation_service.py # Recommendation generation
+├── example_ocr_usage.py     # OCR service examples
+├── example_agent_usage.py   # Agent research examples
+├── test_ocr.py             # OCR service tests
+├── test_agent.py           # Agent research tests
+└── requirements.txt        # Python dependencies
 ```
 
-***
+## Setup
 
-## 🛠️ Tech Stack
+### Prerequisites
 
-| Layer | Technology |
-|---|---|
-| Frontend / UI | Streamlit |
-| OCR Engine | Google Cloud Vision API |
-| AI Agent Framework | LangChain (ReAct Agent) |
-| Large Language Model | Gemini Pro via Vertex AI |
-| Web Search Tool | Tavily Search API |
-| Database | Cloud Firestore |
-| Deployment | Google Cloud Run + Docker |
+- Python 3.9 or higher
+- Google Cloud Platform account with:
+  - Cloud Vision API enabled
+  - Vertex AI API enabled
+  - Service account with appropriate permissions
+- Tavily API key (free tier available at https://tavily.com)
 
-***
+### Installation
 
-## 📂 Project Structure
+1. Clone the repository and navigate to the project directory
 
-```
-ingredientiq/
-├── app.py                    # Streamlit entry point
-├── services/
-│   ├── ocr_service.py        # Vision API + ingredient parser
-│   ├── agent_service.py      # LangChain ReAct agent
-│   ├── recommendation.py     # Health score + verdict generator
-│   └── database.py           # DB operations
-├── prompts/
-│   └── research_prompt.py    # Agent prompt templates
-├── utils/
-│   ├── text_cleaner.py       # OCR normalization
-│   └── helpers.py
-├── Dockerfile
-├── .env.example
-└── README.md
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
 ```
 
-***
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-## 🔄 How It Works
+4. Edit `.env` file with your actual credentials:
+   - `GCP_PROJECT_ID`: Your Google Cloud project ID
+   - `GOOGLE_APPLICATION_CREDENTIALS`: Path to your service account JSON file
+   - `TAVILY_API_KEY`: Your Tavily API key
 
-1. **Upload** — User uploads a photo of a product's ingredient label
-2. **OCR** — Cloud Vision extracts and parses individual ingredients
-3. **Research** — A LangChain ReAct agent searches the web per ingredient for health impacts, safety flags, and regulatory status
-4. **Cache** — All findings saved to DB; previously seen ingredients load instantly
-5. **Verdict** — Gemini Pro generates a BUY / DON'T BUY recommendation with full reasoning
+### Running the Application
 
-***
+```bash
+streamlit run app.py
+```
 
-## 📄 License
+The application will open in your default browser at `http://localhost:8501`
 
-MIT License — see [LICENSE](LICENSE) for details.
+## Usage
 
-***
+### Testing OCR Service
 
-<p align="center">Built with ❤️ at Hackathon 2026</p>
+```bash
+python example_ocr_usage.py path/to/product_label.jpg
+```
+
+### Testing Agent Research
+
+```bash
+python example_agent_usage.py
+```
+
+### Running Tests
+
+```bash
+# Test OCR functionality
+python test_ocr.py
+
+# Test agent research functionality
+python test_agent.py
+```
+
+### Using the Web Application
+
+```bash
+streamlit run app.py
+```
+
+The application will open in your default browser at `http://localhost:8501`
+
+1. Upload an image of a product ingredient label
+2. Wait for OCR extraction and AI analysis
+3. Review the recommendation and detailed ingredient analysis
+
+## Deployment
+
+### Google Cloud Run
+
+```bash
+gcloud run deploy ingredient-analyzer \
+  --source . \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+```
+
+## License
+
+MIT
